@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gastro Explorer - Registro de Restaurantes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#f59e0b" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css">
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gastro Explorer - Registro de Restaurantes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css">
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <div class="logo">
+        <span class="logo-icon">🍽️</span>
+        <h1>Gastro Explorer</h1>
+      </div>
+      <nav>
+        <button id="toggle-form-btn" class="nav-btn active">Añadir</button>
+        <button id="toggle-list-btn" class="nav-btn">Ver Lista</button>
+        <button id="toggle-map-btn" class="nav-btn">Mapa</button>
+        <button id="toggle-stats-btn" class="nav-btn">Estadísticas</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Sección Formulario -->
+      <section id="form-section" class="content-section active">
+        <div class="section-heading">
+          <h2>Añadir Nuevo Restaurante</h2>
+          <p>Registra tus experiencias gastronómicas para mantener un seguimiento de los lugares que visitas.</p>
+        </div>
+
+        <form id="restaurantForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Nombre del Restaurante</label>
+              <input id="name" class="form-input" type="text" required placeholder="Ej: Casa Pedro">
+            </div>
+            <div class="form-group">
+              <label for="cuisine">Tipo de Cocina</label>
+              <select id="cuisine" class="form-input">
+                <option value="española">Española</option>
+                <option value="italiana">Italiana</option>
+                <option value="japonesa">Japonesa</option>
+                <option value="mexicana">Mexicana</option>
+                <option value="india">India</option>
+                <option value="china">China</option>
+                <option value="americana">Americana</option>
+                <option value="francesa">Francesa</option>
+                <option value="vegetariana">Vegetariana</option>
+                <option value="fusion">Fusión</option>
+                <option value="otra">Otra</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="address">Dirección</label>
+              <input id="address" class="form-input" type="text" required placeholder="Ej: Calle Gran Vía 25, Madrid">
+            </div>
+            <div class="form-group">
+              <label for="price">Rango de Precio</label>
+              <select id="price" class="form-input">
+                <option value="1">€ (Económico)</option>
+                <option value="2">€€ (Moderado)</option>
+                <option value="3">€€€ (Alto)</option>
+                <option value="4">€€€€ (Exclusivo)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="dateVisited">Fecha de Visita</label>
+              <input id="dateVisited" class="form-input flatpickr" type="text" placeholder="Selecciona una fecha">
+            </div>
+            <div class="form-group">
+              <label for="rating">Valoración</label>
+              <div class="star-rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+                <input type="hidden" id="rating" value="0">
+              </div>
+            </div>
+            <div class="form-group form-group-full">
+              <label for="comment">Comentario / Experiencia</label>
+              <textarea id="comment" class="form-input" rows="3" placeholder="Describe tu experiencia, platos destacados, servicio..."></textarea>
+            </div>
+            <div class="form-group form-group-full">
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="hasTerraza" class="styled-checkbox">
+                  <label for="hasTerraza">Terraza</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="isAccessible" class="styled-checkbox">
+                  <label for="isAccessible">Accesible</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="hasVeganOptions" class="styled-checkbox">
+                  <label for="hasVeganOptions">Opciones veganas</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="acceptsReservations" class="styled-checkbox">
+                  <label for="acceptsReservations">Acepta reservas</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="image">Fotos de la Experiencia</label>
+              <div class="image-upload-container">
+                <label for="image" class="upload-button">
+                  <span>📷 Seleccionar Imagen</span>
+                  <input id="image" type="file" accept="image/*" class="hidden-file-input">
+                </label>
+                <div class="preview-container">
+                  <img id="preview" class="image-preview" />
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="recommended-dish">Plato Recomendado</label>
+              <input id="recommended-dish" class="form-input" type="text" placeholder="Ej: Paella de mariscos">
+            </div>
+            <div class="form-group">
+              <label for="latitude">Latitud</label>
+              <input id="latitude" type="text" class="form-input" placeholder="Ej: 40.4168">
+            </div>
+            <div class="form-group">
+              <label for="longitude">Longitud</label>
+              <input id="longitude" type="text" class="form-input" placeholder="Ej: -3.7038">
+            </div>
+            <div class="form-group form-group-full">
+              <button type="button" id="find-coords" class="secondary-button">📍 Encontrar Coordenadas desde Dirección</button>
+            </div>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" class="primary-button">Guardar Restaurante</button>
+            <button type="reset" class="ghost-button">Limpiar Formulario</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Sección Lista -->
+      <section id="list-section" class="content-section">
+        <div class="section-heading">
+          <h2>Mis Restaurantes</h2>
+          <div class="filter-controls">
+            <input type="text" id="search-restaurant" class="search-input" placeholder="Buscar restaurante...">
+            <select id="filter-cuisine" class="filter-select">
+              <option value="">Todos los tipos</option>
+              <option value="española">Española</option>
+              <option value="italiana">Italiana</option>
+              <option value="japonesa">Japonesa</option>
+              <option value="mexicana">Mexicana</option>
+              <option value="india">India</option>
+              <option value="china">China</option>
+              <option value="americana">Americana</option>
+              <option value="francesa">Francesa</option>
+              <option value="vegetariana">Vegetariana</option>
+              <option value="fusion">Fusión</option>
+              <option value="otra">Otra</option>
+            </select>
+            <select id="sort-list" class="filter-select">
+              <option value="date-desc">Más recientes primero</option>
+              <option value="date-asc">Más antiguos primero</option>
+              <option value="rating-desc">Mayor valoración</option>
+              <option value="rating-asc">Menor valoración</option>
+              <option value="name-asc">Nombre A-Z</option>
+              <option value="name-desc">Nombre Z-A</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="listaRestaurantes" class="restaurants-grid"></div>
+        
+        <div class="empty-state" id="empty-restaurants">
+          <div class="empty-icon">🍽️</div>
+          <h3>No hay restaurantes guardados</h3>
+          <p>Comienza añadiendo tu primer restaurante desde la sección "Añadir".</p>
+        </div>
+      </section>
+
+      <!-- Sección Mapa -->
+      <section id="map-section" class="content-section">
+        <div class="section-heading">
+          <h2>Mapa de Restaurantes</h2>
+          <div class="map-controls">
+            <select id="filter-map" class="filter-select">
+              <option value="all">Todos los restaurantes</option>
+              <option value="rating-high">Mejor valorados (4-5)</option>
+              <option value="rating-medium">Valoración media (3)</option>
+              <option value="rating-low">Valoración baja (1-2)</option>
+            </select>
+          </div>
+        </div>
+        <div id="map"></div>
+      </section>
+
+      <!-- Sección Estadísticas -->
+      <section id="stats-section" class="content-section">
+        <div class="section-heading">
+          <h2>Mis Estadísticas</h2>
+          <p>Análisis de tus experiencias gastronómicas</p>
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🍽️</div>
+            <div class="stat-content">
+              <div class="stat-value" id="total-places">0</div>
+              <div class="stat-label">Restaurantes Visitados</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-content">
+              <div class="stat-value" id="avg-rating">0.0</div>
+              <div class="stat-label">Valoración Media</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🥘</div>
+            <div class="stat-content">
+              <div class="stat-value" id="fav-cuisine">-</div>
+              <div class="stat-label">Cocina Favorita</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-content">
+              <div class="stat-value" id="last-visit">-</div>
+              <div class="stat-label">Última Visita</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-section">
+          <div class="chart-container">
+            <h3>Restaurantes por Tipo de Cocina</h3>
+            <div class="cuisine-chart" id="cuisine-chart">
+              <!-- Aquí se generará el gráfico -->
+            </div>
+          </div>
+          <div class="chart-container">
+            <h3>Distribución de Valoraciones</h3>
+            <div class="rating-chart" id="rating-chart">
+              <!-- Aquí se generará el gráfico -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="data-controls">
+        <button id="export-data" class="footer-button">📤 Exportar Datos</button>
+        <label for="import-data" class="footer-button">
+          📥 Importar Datos
+          <input type="file" id="import-data" accept=".json" class="hidden-file-input">
+        </label>
+        <button id="clear-data" class="footer-button danger">🗑️ Borrar Todos los Datos</button>
+      </div>
+      <div class="app-info">
+        <p>Gastro Explorer &copy; 2025</p>
+      </div>
+    </footer>
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    // Configuración general
+    const usarMarcadoresCluster = true;
+    let activeRating = 0;
+    let currentRestaurants = [];
+    
+    // Inicializar mapa
+    const map = L.map('map').setView([40.4168, -3.7038], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const markerGroup = usarMarcadoresCluster ? L.markerClusterGroup() : L.layerGroup();
+    map.addLayer(markerGroup);
+
+    // Referencias a elementos DOM
+    const form = document.getElementById('restaurantForm');
+    const preview = document.getElementById('preview');
+    const listaDiv = document.getElementById('listaRestaurantes');
+    const emptyState = document.getElementById('empty-restaurants');
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
+    const closeModal = document.querySelector('.close-modal');
+    
+    // Inicialización de componentes
+    flatpickr("#dateVisited", {
+      dateFormat: "d/m/Y",
+      maxDate: "today",
+      locale: {
+        firstDayOfWeek: 1,
+        weekdays: {
+          shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+          longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+        },
+        months: {
+          shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+          longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+        }
+      }
+    });
+
+    // Navegación
+    const sections = ['form', 'list', 'map', 'stats'];
+    sections.forEach(section => {
+      document.getElementById(`toggle-${section}-btn`).addEventListener('click', () => {
+        sections.forEach(s => {
+          document.getElementById(`${s}-section`).classList.remove('active');
+          document.getElementById(`toggle-${s}-btn`).classList.remove('active');
+        });
+        document.getElementById(`${section}-section`).classList.add('active');
+        document.getElementById(`toggle-${section}-btn`).classList.add('active');
+        
+        if (section === 'map') {
+          // Refrescar el mapa cuando se activa esa sección
+          setTimeout(() => map.invalidateSize(), 100);
+        }
+        if (section === 'stats') {
+          // Actualizar estadísticas cuando se activa esa sección
+          updateStats();
+        }
+      });
+    });
+
+    // Sistema de valoración por estrellas
+    document.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('mouseover', (e) => {
+        const value = parseInt(e.target.dataset.value);
+        document.querySelectorAll('.star').forEach(s => {
+          s.classList.remove('active', 'hovered');
+          if (parseInt(s.dataset.value) <= value) {
+            s.classList.add('hovered');
+          }
+        });
+      });
+      
+      star.addEventListener('mouseout', () => {
+        document.querySelectorAll('.star').forEach(s => {
+          s.classList.remove('hovered');
+          if (parseInt(s.dataset.value) <= activeRating) {
+            s.classList.add('active');
+          }
+        });
+      });
+      
+      star.addEventListener('click', (e) => {
+        const value = parseInt(e.target.dataset.value);
+        activeRating = value;
+        document.getElementById('rating').value = value;
+        document.querySelectorAll('.star').forEach(s => {
+          s.classList.remove('active');
+          if (parseInt(s.dataset.value) <= value) {
+            s.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // Preview de imagen
+    document.getElementById('image').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = '';
+        preview.classList.remove('has-image');
+      }
+    });
+
+    // Evento para encontrar coordenadas desde dirección
+    document.getElementById('find-coords').addEventListener('click', async () => {
+      const address = document.getElementById('address').value;
+      if (!address) {
+        showNotification('Por favor, introduce primero una dirección', 'error');
+        return;
+      }
+      
+      try {
+        showNotification('Buscando coordenadas...', 'info');
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          document.getElementById('latitude').value = data[0].lat;
+          document.getElementById('longitude').value = data[0].lon;
+          showNotification('¡Coordenadas encontradas!', 'success');
+        } else {
+          showNotification('No se encontraron coordenadas para esta dirección. Intenta ser más específico.', 'error');
+        }
+      } catch (error) {
+        showNotification('Error al buscar coordenadas. Inténtalo de nuevo más tarde.', 'error');
+      }
+    });
+
+    // Formulario de envío
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const cuisine = document.getElementById('cuisine').value;
+      const address = document.getElementById('address').value;
+      const price = document.getElementById('price').value;
+      const dateVisited = document.getElementById('dateVisited').value;
+      const rating = parseInt(document.getElementById('rating').value);
+      const comment = document.getElementById('comment').value;
+      const recommendedDish = document.getElementById('recommended-dish').value;
+      
+      // Checkboxes
+      const hasTerraza = document.getElementById('hasTerraza').checked;
+      const isAccessible = document.getElementById('isAccessible').checked;
+      const hasVeganOptions = document.getElementById('hasVeganOptions').checked;
+      const acceptsReservations = document.getElementById('acceptsReservations').checked;
+      
+      const image = preview.src || null;
+      let lat = document.getElementById('latitude').value;
+      let lng = document.getElementById('longitude').value;
+
+      if (!lat || !lng) {
+        showNotification('Debes proporcionar coordenadas para guardar el restaurante', 'error');
+        return;
+      }
+
+      if (!rating) {
+        showNotification('Por favor, añade una valoración', 'error');
+        return;
+      }
+
+      const restaurant = { 
+        id: Date.now().toString(),
+        name, 
+        cuisine,
+        address, 
+        price,
+        dateVisited: dateVisited || new Date().toLocaleDateString('es-ES'),
+        rating, 
+        comment, 
+        image,
+        recommendedDish,
+        hasTerraza,
+        isAccessible,
+        hasVeganOptions,
+        acceptsReservations,
+        lat, 
+        lng,
+        dateAdded: new Date().toISOString()
+      };
+      
+      const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+      restaurants.push(restaurant);
+      localStorage.setItem('restaurants', JSON.stringify(restaurants));
+
+      addMarkerToMap(restaurant);
+      showNotification('¡Restaurante guardado con éxito!', 'success');
+      form.reset();
+      preview.src = '';
+      preview.classList.remove('has-image');
+      activeRating = 0;
+      document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+      
+      // Actualizar la lista de restaurantes
+      renderRestaurantsList();
+      updateStats();
+    });
+
+    // Funciones para el mapa
+    function addMarkerToMap(restaurant) {
+      // Crear icono personalizado basado en tipo de cocina
+      const icon = L.divIcon({
+        className: 'restaurant-marker',
+        html: `<div class="marker-content ${getCuisineClass(restaurant.cuisine)}" data-rating="${restaurant.rating}">
+                <span class="marker-icon">🍽️</span>
+               </div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -35]
+      });
+
+      const marker = L.marker([restaurant.lat, restaurant.lng], { icon });
+      
+      // Crear contenido del popup
+      let popupHtml = `
+        <div class="restaurant-popup">
+          <h3>${restaurant.name}</h3>
+          <div class="popup-details">
+            <p><strong>Tipo:</strong> ${formatCuisine(restaurant.cuisine)}</p>
+            <p><strong>Dirección:</strong> ${restaurant.address}</p>
+            <p><strong>Valoración:</strong> ${'⭐'.repeat(restaurant.rating)}</p>
+            <p><strong>Precio:</strong> ${'€'.repeat(parseInt(restaurant.price))}</p>
+            ${restaurant.recommendedDish ? `<p><strong>Recomendado:</strong> ${restaurant.recommendedDish}</p>` : ''}
+          </div>
+          ${restaurant.comment ? `<p class="popup-comment">"${restaurant.comment}"</p>` : ''}
+          ${restaurant.image ? `<img src="${restaurant.image}" class="popup-image">` : ''}
+          <button class="popup-button view-details" data-id="${restaurant.id}">Ver más detalles</button>
+        </div>
+      `;
+      
+      marker.bindPopup(popupHtml);
+      marker.restaurantId = restaurant.id; // Para referencia
+      markerGroup.addLayer(marker);
+    }
+
+    function getCuisineClass(cuisine) {
+      const cuisineMap = {
+        'española': 'cuisine-spanish',
+        'italiana': 'cuisine-italian',
+        'japonesa': 'cuisine-japanese',
+        'mexicana': 'cuisine-mexican',
+        'india': 'cuisine-indian',
+        'china': 'cuisine-chinese',
+        'americana': 'cuisine-american',
+        'francesa': 'cuisine-french',
+        'vegetariana': 'cuisine-vegetarian',
+        'fusion': 'cuisine-fusion'
+      };
+      return cuisineMap[cuisine] || 'cuisine-other';
+    }
+
+    function formatCuisine(cuisine) {
+      return cuisine.charAt(0).toUpperCase() + cuisine.slice(1);
+    }
+
+    function getColor(rating) {
+      return rating >= 4 ? 'green' : rating >= 3 ? 'orange' : 'red';
+    }
+
+    // Función para mostrar los restaurantes en la lista
+    function renderRestaurantsList(filters = {}) {
+      const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+      currentRestaurants = [...restaurants];
+      
+      // Aplicar filtros si existen
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        currentRestaurants = currentRestaurants.filter(r => 
+          r.name.toLowerCase().includes(searchTerm) || 
+          r.address.toLowerCase().includes(searchTerm) ||
+          r.comment.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      if (filters.cuisine) {
+        currentRestaurants = currentRestaurants.filter(r => r.cuisine === filters.cuisine);
+      }
+      
+      // Aplicar orden
+      if (filters.sort) {
+        switch(filters.sort) {
+          case 'date-desc':
+            currentRestaurants.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+            break;
+          case 'date-asc':
+            currentRestaurants.sort((a, b) => new Date(a.dateAdded) - new Date(b.dateAdded));
+            break;
+          case 'rating-desc':
+            currentRestaurants.sort((a, b) => b.rating - a.rating);
+            break;
+          case 'rating-asc':
+            currentRestaurants.sort((a, b) => a.rating - b.rating);
+            break;
+          case 'name-asc':
+            currentRestaurants.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+          case 'name-desc':
+            currentRestaurants.sort((a, b) => b.name.localeCompare(a.name));
+            break;
+        }
+      }
+      
+      if (currentRestaurants.length === 0) {
+        listaDiv.innerHTML = '';
+        emptyState.style.display = 'flex';
+      } else {
+        emptyState.style.display = 'none';
+        
+        listaDiv.innerHTML = currentRestaurants.map(r => `
+          <div class="restaurant-card" data-id="${r.id}">
+            <div class="card-content">
+              ${r.image ? `<div class="card-img-container"><img src="${r.image}" alt="${r.name}" class="card-img"></div>` : ''}
+              <div class="card-details">
+                <div class="card-header">
+                  <h3>${r.name}</h3>
+                  <div class="card-meta">
+                    <span class="cuisine-badge ${getCuisineClass(r.cuisine)}">${formatCuisine(r.cuisine)}</span>
+                    <span class="price-badge">${'€'.repeat(parseInt(r.price))}</span>
+                  </div>
+                </div>
+                <div class="card-rating">
+                  ${'<span class="star-filled">★</span>'.repeat(r.rating)}${'<span class="star-empty">★</span>'.repeat(5-r.rating)}
+                </div>
+                <p class="card-address">${r.address}</p>
+                ${r.comment ? `<p class="card-comment">${r.comment.length > 80 ? r.comment.substring(0, 80) + '...' : r.comment}</p>` : ''}
+                <div class="card-features">
+                  ${r.hasTerraza ? '<span class="feature-badge">Terraza</span>' : ''}
+                  ${r.isAccessible ? '<span class="feature-badge">Accesible</span>' : ''}
+                  ${r.hasVeganOptions ? '<span class="feature-badge">Vegano</span>' : ''}
+                </div>
+                <div class="card-date">Visitado: ${r.dateVisited || 'Sin fecha'}</div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="card-btn view-on-map" data-lat="${r.lat}" data-lng="${r.lng}" data-id="${r.id}">Ver en Mapa</button>
+              <button class="card-btn view-details" data-id="${r.id}">Detalles</button>
+              <button class="card-btn delete-restaurant" data-id="${r.id}">Eliminar</button>
+            </div>
+          </div>
+        `).join('');
+        
+        // Añadir listeners a los botones
+        document.querySelectorAll('.view-on-map').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const lat = e.target.getAttribute('data-lat');
+            const lng = e.target.getAttribute('data-lng');
+            const id = e.target.getAttribute('data-id');
+            
+            // Cambiar a la sección del mapa
+            document.getElementById('toggle-map-btn').click();
+            
+            // Centrar el mapa en esa ubicación
+            map.setView([lat, lng], 15);
+            
+            // Encontrar y abrir el popup del marcador
+            markerGroup.eachLayer(function(layer) {
+              if (layer.restaurantId === id) {
+                layer.openPopup();
+              }
+            });
+          });
+        });
+        
+        document.querySelectorAll('.view-details').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.target.getAttribute('data-id');
+            const restaurant = currentRestaurants.find(r => r.id === id);
+            if (restaurant) {
+              showRestaurantDetails(restaurant);
+            }
+          });
+        });
+        
+        document.querySelectorAll('.delete-restaurant').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.target.getAttribute('data-id');
+        });
+        });
+        
+        document.querySelectorAll('.delete-restaurant').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.target.getAttribute('data-id');
+            if (confirm('¿Estás seguro de que quieres eliminar este restaurante?')) {
+              deleteRestaurant(id);
+            }
+          });
+        });
+      }
+    }
+
+    // Función para mostrar detalles de un restaurante
+    function showRestaurantDetails(restaurant) {
+      modalBody.innerHTML = `
+        <div class="restaurant-detail">
+          <h2>${restaurant.name}</h2>
+          
+          ${restaurant.image ? `
+            <div class="detail-image-container">
+              <img src="${restaurant.image}" alt="${restaurant.name}" class="detail-image">
+            </div>
+          ` : ''}
+          
+          <div class="detail-content">
+            <div class="detail-meta">
+              <span class="cuisine-badge ${getCuisineClass(restaurant.cuisine)}">${formatCuisine(restaurant.cuisine)}</span>
+              <span class="price-badge">${'€'.repeat(parseInt(restaurant.price))}</span>
+              <div class="detail-rating">
+                ${'<span class="star-filled">★</span>'.repeat(restaurant.rating)}${'<span class="star-empty">★</span>'.repeat(5-restaurant.rating)}
+              </div>
+            </div>
+            
+            <div class="detail-info">
+              <p><strong>Dirección:</strong> ${restaurant.address}</p>
+              <p><strong>Fecha de visita:</strong> ${restaurant.dateVisited || 'No especificada'}</p>
+              ${restaurant.recommendedDish ? `<p><strong>Plato recomendado:</strong> ${restaurant.recommendedDish}</p>` : ''}
+            </div>
+            
+            <div class="detail-features">
+              <h3>Características</h3>
+              <div class="features-grid">
+                <div class="feature-item ${restaurant.hasTerraza ? 'active' : ''}">
+                  <span class="feature-icon">🪑</span>
+                  <span class="feature-name">Terraza</span>
+                </div>
+                <div class="feature-item ${restaurant.isAccessible ? 'active' : ''}">
+                  <span class="feature-icon">♿</span>
+                  <span class="feature-name">Accesible</span>
+                </div>
+                <div class="feature-item ${restaurant.hasVeganOptions ? 'active' : ''}">
+                  <span class="feature-icon">🥗</span>
+                  <span class="feature-name">Opciones veganas</span>
+                </div>
+                <div class="feature-item ${restaurant.acceptsReservations ? 'active' : ''}">
+                  <span class="feature-icon">📅</span>
+                  <span class="feature-name">Reservas</span>
+                </div>
+              </div>
+            </div>
+            
+            ${restaurant.comment ? `
+              <div class="detail-comment">
+                <h3>Comentarios</h3>
+                <p>${restaurant.comment}</p>
+              </div>
+            ` : ''}
+            
+            <div class="detail-location">
+              <h3>Ubicación</h3>
+              <div id="detail-map" class="detail-map" data-lat="${restaurant.lat}" data-lng="${restaurant.lng}"></div>
+            </div>
+            
+            <div class="detail-actions">
+              <button class="primary-button view-on-map-detail" data-lat="${restaurant.lat}" data-lng="${restaurant.lng}" data-id="${restaurant.id}">Ver en mapa principal</button>
+              <button class="danger-button delete-restaurant-detail" data-id="${restaurant.id}">Eliminar restaurante</button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      modal.style.display = 'block';
+      
+      // Inicializar mapa en detalle
+      setTimeout(() => {
+        const detailMap = L.map('detail-map').setView([restaurant.lat, restaurant.lng], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(detailMap);
+        L.marker([restaurant.lat, restaurant.lng]).addTo(detailMap);
+      }, 100);
+      
+      // Añadir event listeners a los botones
+      document.querySelector('.view-on-map-detail').addEventListener('click', function(e) {
+        const lat = e.target.getAttribute('data-lat');
+        const lng = e.target.getAttribute('data-lng');
+        const id = e.target.getAttribute('data-id');
+        
+        // Cerrar modal
+        modal.style.display = 'none';
+        
+        // Cambiar a la sección del mapa
+        document.getElementById('toggle-map-btn').click();
+        
+        // Centrar el mapa en esa ubicación
+        map.setView([lat, lng], 15);
+        
+        // Encontrar y abrir el popup del marcador
+        markerGroup.eachLayer(function(layer) {
+          if (layer.restaurantId === id) {
+            layer.openPopup();
+          }
+        });
+      });
+      
+      document.querySelector('.delete-restaurant-detail').addEventListener('click', function(e) {
+        const id = e.target.getAttribute('data-id');
+        if (confirm('¿Estás seguro de que quieres eliminar este restaurante?')) {
+          deleteRestaurant(id);
+          modal.style.display = 'none';
+        }
+      });
+    }
+
+    // Función para eliminar un restaurante
+    function deleteRestaurant(id) {
+      let restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+      restaurants = restaurants.filter(r => r.id !== id);
+      localStorage.setItem('restaurants', JSON.stringify(restaurants));
+      
+      // Actualizar la lista y el mapa
+      renderRestaurantsList();
+      refreshMap();
+      updateStats();
+      
+      showNotification('Restaurante eliminado correctamente', 'success');
+    }
+
+    // Función para refrescar el mapa
+    function refreshMap() {
+      markerGroup.clearLayers();
+      const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+      restaurants.forEach(addMarkerToMap);
+    }
+
+    // Sistema de filtrado en la lista
+    document.getElementById('search-restaurant').addEventListener('input', function(e) {
+      const searchTerm = e.target.value;
+      const cuisine = document.getElementById('filter-cuisine').value;
+      const sort = document.getElementById('sort-list').value;
+      renderRestaurantsList({ search: searchTerm, cuisine, sort });
+    });
+
+    document.getElementById('filter-cuisine').addEventListener('change', function(e) {
+      const cuisine = e.target.value;
+      const searchTerm = document.getElementById('search-restaurant').value;
+      const sort = document.getElementById('sort-list').value;
+      renderRestaurantsList({ search: searchTerm, cuisine, sort });
+    });
+
+    document.getElementById('sort-list').addEventListener('change', function(e) {
+      const sort = e.target.value;
+      const searchTerm = document.getElementById('search-restaurant').value;
+      const cuisine = document.getElementById('filter-cuisine').value;
+      renderRestaurantsList({ search: searchTerm, cuisine, sort });
+    });
+
+    // Filtro en el mapa
+    document.getElementById('filter-map').addEventListener('change', function(e) {
+      const filter = e.target.value;
+      markerGroup.clearLayers();
+      
+      const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+      let filteredRestaurants = restaurants;
+      
+      if (filter === 'rating-high') {
+        filteredRestaurants = restaurants.filter(r => r.rating >= 4);
+      } else if (filter === 'rating-medium') {
+        filteredRestaurants = restaurants.filter(r => r.rating === 3);
+      } else if (filter === 'rating-low') {
+        filteredRestaurants = restaurants.filter(r => r.rating <= 2);
+      }
+      
+      filteredRestaurants.forEach(addMarkerToMap);
+    });
+
+    // Modal
+    closeModal.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Exportar e importar datos
+    document.getElementById('export-data').addEventListener('click', function() {
+      const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+      if (restaurants.length === 0) {
+        showNotification('No hay restaurantes para exportar', 'error');
+        return;
+      }
+      
+      const dataStr = JSON.stringify(restaurants);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = 'mis-restaurantes-' + new Date().toLocaleDateString('es-ES').replace(/\//g, '-') + '.json';
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+      
+      showNotification('Datos exportados correctamente', 'success');
+    });
+
+    document.getElementById('import-data').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          
+          if (!Array.isArray(importedData)) {
+            showNotification('Formato de archivo no válido', 'error');
+            return;
+          }
+          
+          // Validar estructura básica
+          const isValid = importedData.every(item => 
+            item.name && item.address && typeof item.rating === 'number' && 
+            item.lat && item.lng
+          );
+          
+          if (!isValid) {
+            showNotification('El archivo contiene datos con formato incorrecto', 'error');
+            return;
+          }
+          
+          // Fusionar con datos existentes o reemplazar
+          if (confirm('¿Quieres combinar estos datos con tus restaurantes existentes? Selecciona "Cancelar" para reemplazar todos tus datos actuales.')) {
+            // Fusionar, evitando duplicados por nombre y dirección
+            const existingData = JSON.parse(localStorage.getItem('restaurants') || '[]');
+            const mergedData = [...existingData];
+            
+            importedData.forEach(imported => {
+              const isDuplicate = existingData.some(existing => 
+                existing.name === imported.name && existing.address === imported.address
+              );
+              
+              if (!isDuplicate) {
+                // Asegurarse de que tiene un ID único
+                if (!imported.id) {
+                  imported.id = Date.now().toString() + Math.random().toString(36).substr(2, 5);
+                }
+                mergedData.push(imported);
+              }
+            });
+            
+            localStorage.setItem('restaurants', JSON.stringify(mergedData));
+          } else {
+            // Asegurarse de que todos tienen ID
+            importedData.forEach(item => {
+              if (!item.id) {
+                item.id = Date.now().toString() + Math.random().toString(36).substr(2, 5);
+              }
+            });
+            localStorage.setItem('restaurants', JSON.stringify(importedData));
+          }
+          
+          // Actualizar visualización
+          renderRestaurantsList();
+          refreshMap();
+          updateStats();
+          
+          showNotification('Datos importados correctamente', 'success');
+        } catch (error) {
+          showNotification('Error al leer el archivo: ' + error.message, 'error');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Botón para borrar datos
+    document.getElementById('clear-data').addEventListener('click', function() {
+      if (confirm('¿Estás seguro de que quieres eliminar TODOS los restaurantes? Esta acción no se puede deshacer.')) {
+        localStorage.removeItem('restaurants');
+        renderRestaurantsList();
+        refreshMap();
+        updateStats();
+        showNotification('Todos los datos han sido eliminados', 'info');
+      }
+    });
+
+    // Función para actualizar estadísticas
+    function updateStats() {
+      const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+      
+      // Total de restaurantes
+      document.getElementById('total-places').textContent = restaurants.length;
+      
+      // Valoración media
+      if (restaurants.length > 0) {
+        const avgRating = restaurants.reduce((acc, r) => acc + r.rating, 0) / restaurants.length;
+        document.getElementById('avg-rating').textContent = avgRating.toFixed(1);
+      } else {
+        document.getElementById('avg-rating').textContent = '0.0';
+      }
+      
+      // Cocina favorita
+      if (restaurants.length > 0) {
+        const cuisineCount = {};
+        restaurants.forEach(r => {
+          cuisineCount[r.cuisine] = (cuisineCount[r.cuisine] || 0) + 1;
+        });
+        
+        let favCuisine = '';
+        let maxCount = 0;
+        
+        for (const cuisine in cuisineCount) {
+          if (cuisineCount[cuisine] > maxCount) {
+            maxCount = cuisineCount[cuisine];
+            favCuisine = cuisine;
+          }
+        }
+        
+        document.getElementById('fav-cuisine').textContent = formatCuisine(favCuisine);
+      } else {
+        document.getElementById('fav-cuisine').textContent = '-';
+      }
+      
+      // Última visita
+      if (restaurants.length > 0) {
+        let lastVisit = null;
+        let lastVisitDate = null;
+        
+        restaurants.forEach(r => {
+          if (r.dateVisited) {
+            const parts = r.dateVisited.split('/');
+            const visitDate = new Date(parts[2], parts[1] - 1, parts[0]);
+            
+            if (!lastVisitDate || visitDate > lastVisitDate) {
+              lastVisitDate = visitDate;
+              lastVisit = r.dateVisited;
+            }
+          }
+        });
+        
+        document.getElementById('last-visit').textContent = lastVisit || '-';
+      } else {
+        document.getElementById('last-visit').textContent = '-';
+      }
+      
+      // Gráfico de cocinas
+      renderCuisineChart(restaurants);
+      
+      // Gráfico de valoraciones
+      renderRatingChart(restaurants);
+    }
+
+    // Función para renderizar gráfico de tipos de cocina
+    function renderCuisineChart(restaurants) {
+      if (restaurants.length === 0) {
+        document.getElementById('cuisine-chart').innerHTML = '<div class="empty-chart">No hay datos disponibles</div>';
+        return;
+      }
+      
+      const cuisineCount = {};
+      restaurants.forEach(r => {
+        cuisineCount[r.cuisine] = (cuisineCount[r.cuisine] || 0) + 1;
+      });
+      
+      let chartHtml = '';
+      
+      for (const cuisine in cuisineCount) {
+        const percentage = (cuisineCount[cuisine] / restaurants.length) * 100;
+        chartHtml += `
+          <div class="chart-bar-container">
+            <div class="chart-label">${formatCuisine(cuisine)}</div>
+            <div class="chart-bar ${getCuisineClass(cuisine)}" style="width: ${percentage}%">
+              <div class="chart-value">${cuisineCount[cuisine]}</div>
+            </div>
+          </div>
+        `;
+      }
+      
+      document.getElementById('cuisine-chart').innerHTML = chartHtml;
+    }
+
+    // Función para renderizar gráfico de valoraciones
+    function renderRatingChart(restaurants) {
+      if (restaurants.length === 0) {
+        document.getElementById('rating-chart').innerHTML = '<div class="empty-chart">No hay datos disponibles</div>';
+        return;
+      }
+      
+      const ratingCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+      restaurants.forEach(r => {
+        ratingCount[r.rating] = (ratingCount[r.rating] || 0) + 1;
+      });
+      
+      let chartHtml = '';
+      
+      for (let rating = 5; rating >= 1; rating--) {
+        const percentage = (ratingCount[rating] / restaurants.length) * 100;
+        const ratingColor = rating >= 4 ? 'rating-high' : (rating >= 3 ? 'rating-medium' : 'rating-low');
+        
+        chartHtml += `
+          <div class="chart-bar-container">
+            <div class="chart-label">${'★'.repeat(rating)}</div>
+            <div class="chart-bar ${ratingColor}" style="width: ${percentage}%">
+              <div class="chart-value">${ratingCount[rating]}</div>
+            </div>
+          </div>
+        `;
+      }
+      
+      document.getElementById('rating-chart').innerHTML = chartHtml;
+    }
+
+    // Función de notificación
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <div class="notification-content">
+          <span class="notification-icon">${
+            type === 'success' ? '✓' : 
+            type === 'error' ? '✕' : 
+            type === 'warning' ? '⚠' : 'ℹ'
+          }</span>
+          <span>${message}</span>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Mostrar con animación
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 10);
+      
+      // Ocultar después de un tiempo
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      }, 3000);
+    }
+
+    // Inicializar la aplicación con datos de ejemplo
+    function cargarDatosIniciales() {
+      const stored = JSON.parse(localStorage.getItem('restaurants') || '[]');
+      
+      // Solo cargar ejemplos si no hay datos
+      if (stored.length === 0) {
+        const ejemplos = [
+          {
+            id: "1",
+            name: "La Maison Española",
+            cuisine: "española",
+            address: "Calle de Alcalá 46, Madrid",
+            price: "2",
+            dateVisited: "15/03/2025",
+            rating: 4,
+            comment: "Excelente paella y ambiente muy acogedor. El servicio fue impecable y los precios razonables.",
+            recommendedDish: "Paella de mariscos",
+            hasTerraza: true,
+            isAccessible: true,
+            hasVeganOptions: false,
+            acceptsReservations: true,
+            image: null,
+            lat: 40.4183,
+            lng: -3.6933,
+            dateAdded: new Date().toISOString()
+          },
+          {
+            id: "2",
+            name: "Napoli Centrale",
+            cuisine: "italiana",
+            address: "Carrer de Mallorca 225, Barcelona",
+            price: "3",
+            dateVisited: "03/02/2025",
+            rating: 5,
+            comment: "Las mejores pizzas de Barcelona, con masa fermentada 48 horas. El tiramisú es imprescindible.",
+            recommendedDish: "Pizza Margherita D.O.P.",
+            hasTerraza: false,
+            isAccessible: true,
+            hasVeganOptions: true,
+            acceptsReservations: true,
+            image: null,
+            lat: 41.3959,
+            lng: 2.1566,
+            dateAdded: new Date().toISOString()
+          },
+          {
+            id: "3",
+            name: "Sakura Sushi",
+            cuisine: "japonesa",
+            address: "Calle Fernando VI 10, Madrid",
+            price: "3",
+            dateVisited: "22/01/2025",
+            rating: 4,
+            comment: "Sushi muy fresco y bien preparado. El servicio es rápido y eficiente.",
+            recommendedDish: "Sashimi variado",
+            hasTerraza: false,
+            isAccessible: true,
+            hasVeganOptions: true,
+            acceptsReservations: true,
+            image: null,
+            lat: 40.4251,
+            lng: -3.6954,
+            dateAdded: new Date().toISOString()
+          },
+          {
+            id: "4",
+            name: "Taquería La Mexicana",
+            cuisine: "mexicana",
+            address: "Paseo de la Castellana 200, Madrid",
+            price: "2",
+            dateVisited: "10/01/2025",
+            rating: 3,
+            comment: "Tacos auténticos y margaritas bien preparadas. El ambiente es muy animado los fines de semana.",
+            recommendedDish: "Tacos al pastor",
+            hasTerraza: true,
+            isAccessible: false,
+            hasVeganOptions: true,
+            acceptsReservations: false,
+            image: null,
+            lat: 40.4605,
+            lng: -3.6876,
+            dateAdded: new Date().toISOString()
+          },
+          {
+            id: "5",
+            name: "Bistrot Parisien",
+            cuisine: "francesa",
+            address: "Plaza del Ayuntamiento 15, Valencia",
+            price: "4",
+            dateVisited: "30/12/2024",
+            rating: 5,
+            comment: "Cocina francesa clásica de gran nivel. El menú degustación merece mucho la pena.",
+            recommendedDish: "Coq au vin",
+            hasTerraza: true,
+            isAccessible: true,
+            hasVeganOptions: false,
+            acceptsReservations: true,
+            image: null,
+            lat: 39.4702,
+            lng: -0.3768,
+            dateAdded: new Date().toISOString()
+          }
+        ];
+        
+        localStorage.setItem('restaurants', JSON.stringify(ejemplos));
+      }
+      
+      // Cargar todos los restaurantes en el mapa
+      refreshMap();
+      
+      // Inicializar lista
+      renderRestaurantsList();
+      
+      // Inicializar estadísticas
+      updateStats();
+    }
+
+    // Iniciar la aplicación
+    cargarDatosIniciales();
+
+  </script>
+  </body>
+</html>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker registrado ✅'))
+        .catch(error => console.log('Error al registrar Service Worker:', error));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1084 @@
+/* Variables y reset */
+:root {
+    --primary-color: #ff6b35;
+    --primary-dark: #e85a2a;
+    --secondary-color: #1a535c;
+    --text-color: #333;
+    --text-light: #666;
+    --background-color: #f8f9fa;
+    --card-bg: #fff;
+    --border-color: #ddd;
+    --success-color: #4caf50;
+    --error-color: #f44336;
+    --info-color: #2196f3;
+    --warning-color: #ff9800;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+  
+  /* Layout principal */
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  header {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .logo-icon {
+    font-size: 1.8rem;
+  }
+  
+  .logo h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+  
+  nav {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .nav-btn {
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .nav-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .nav-btn.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  .content-section {
+    display: none;
+    animation: fadeIn 0.3s;
+  }
+  
+  .content-section.active {
+    display: block;
+  }
+  
+  .section-heading {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .section-heading h2 {
+    font-size: 2rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  .section-heading p {
+    color: var(--text-light);
+  }
+  
+  footer {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 1.5rem 2rem;
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  /* Formulario */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group-full {
+    grid-column: 1 / -1;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
+  }
+  
+  textarea.form-input {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .form-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  /* Sistema de valoración con estrellas */
+  .star-rating {
+    display: flex;
+    gap: 5px;
+    font-size: 1.8rem;
+    color: #ddd;
+  }
+  
+  .star {
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .star:hover,
+  .star.hovered,
+  .star.active {
+    color: gold;
+  }
+  
+  /* Subida de imágenes */
+  .image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .upload-button {
+    display: inline-block;
+    padding: 0.8rem 1rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    text-align: center;
+    transition: var(--transition);
+  }
+  
+  .upload-button:hover {
+    background-color: #16464e;
+  }
+  
+  .hidden-file-input {
+    display: none;
+  }
+  
+  .preview-container {
+    width: 100%;
+    min-height: 150px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  .image-preview {
+    max-width: 100%;
+    max-height: 200px;
+    display: none;
+  }
+  
+  .image-preview.has-image {
+    display: block;
+  }
+  
+  /* Checkbox personalizado */
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .styled-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+  }
+  
+  /* Lista de restaurantes */
+  .restaurants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .restaurant-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+  }
+  
+  .restaurant-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-content {
+    padding: 1.5rem;
+  }
+  
+  .card-img-container {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+  }
+  
+  .card-img:hover {
+    transform: scale(1.05);
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.8rem;
+  }
+  
+  .card-header h3 {
+    font-size: 1.2rem;
+    margin-right: 10px;
+  }
+  
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .cuisine-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    background-color: #e9ecef;
+    color: var(--text-color);
+  }
+  
+  .price-badge {
+    font-weight: bold;
+    color: #28a745;
+  }
+  
+  .card-rating {
+    margin-bottom: 0.8rem;
+  }
+  
+  .star-filled {
+    color: gold;
+  }
+  
+  .star-empty {
+    color: #ddd;
+  }
+  
+  .card-address {
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-light);
+  }
+  
+  .card-comment {
+    font-style: italic;
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .card-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 0.8rem;
+  }
+  
+  .feature-badge {
+    background-color: #e7f5ff;
+    color: #228be6;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+  }
+  
+  .card-date {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+  
+  .card-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .card-btn {
+    padding: 0.5rem 0.8rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+  }
+  
+  .view-on-map {
+    background-color: #e7f5ff;
+    color: #228be6;
+  }
+  
+  .view-on-map:hover {
+    background-color: #228be6;
+    color: white;
+  }
+  
+  .view-details {
+    background-color: #e6fcf5;
+    color: #0ca678;
+  }
+  
+  .view-details:hover {
+    background-color: #0ca678;
+    color: white;
+  }
+  
+  .delete-restaurant {
+    background-color: #fff5f5;
+    color: #fa5252;
+  }
+  
+  .delete-restaurant:hover {
+    background-color: #fa5252;
+    color: white;
+  }
+  
+  /* Mapa */
+  #map {
+    height: 600px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    z-index: 1;
+  }
+  
+  .map-controls {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .restaurant-marker {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .marker-content {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    font-size: 1.2rem;
+    border: 3px solid;
+  }
+  
+  /* Colores por tipo de cocina */
+  .cuisine-spanish {
+    border-color: #e63946;
+    background-color: rgba(230, 57, 70, 0.1);
+  }
+  
+  .cuisine-italian {
+    border-color: #2a9d8f;
+    background-color: rgba(42, 157, 143, 0.1);
+  }
+  
+  .cuisine-japanese {
+    border-color: #e76f51;
+    background-color: rgba(231, 111, 81, 0.1);
+  }
+  
+  .cuisine-mexican {
+    border-color: #00b4d8;
+    background-color: rgba(0, 180, 216, 0.1);
+  }
+  
+  .cuisine-indian {
+    border-color: #fb8500;
+    background-color: rgba(251, 133, 0, 0.1);
+  }
+  
+  .cuisine-chinese {
+    border-color: #d62828;
+    background-color: rgba(214, 40, 40, 0.1);
+  }
+  
+  .cuisine-american {
+    border-color: #4361ee;
+    background-color: rgba(67, 97, 238, 0.1);
+  }
+  
+  .cuisine-french {
+    border-color: #7209b7;
+    background-color: rgba(114, 9, 183, 0.1);
+  }
+  
+  .cuisine-vegetarian {
+    border-color: #40916c;
+    background-color: rgba(64, 145, 108, 0.1);
+  }
+  
+  .cuisine-fusion {
+    border-color: #f4a261;
+    background-color: rgba(244, 162, 97, 0.1);
+  }
+  
+  .cuisine-other {
+    border-color: #adb5bd;
+    background-color: rgba(173, 181, 189, 0.1);
+  }
+  
+  /* Popup del mapa */
+  .restaurant-popup {
+    padding: 10px;
+    max-width: 300px;
+  }
+  
+  .restaurant-popup h3 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+  }
+  
+  .popup-details {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .popup-details p {
+    margin-bottom: 5px;
+  }
+  
+  .popup-comment {
+    font-style: italic;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .popup-image {
+    width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  
+  .popup-button {
+    padding: 5px 10px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* Estadísticas */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .stat-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .stat-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+  }
+  
+  .stat-content {
+    flex: 1;
+  }
+  
+  .stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+  
+  .chart-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  .chart-container {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+  }
+  
+  .chart-container h3 {
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+    text-align: center;
+  }
+  
+  .chart-bar-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+  
+  .chart-label {
+    width: 100px;
+    font-size: 0.9rem;
+    text-align: right;
+    padding-right: 10px;
+  }
+  
+  .chart-bar {
+    height: 25px;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    min-width: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  .chart-value {
+    color: white;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  
+  .empty-chart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 150px;
+    color: var(--text-light);
+    font-style: italic;
+  }
+  
+  /* Estado vacío */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--text-light);
+  }
+  
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+  
+  .empty-state h3 {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Buscador y filtros */
+  .filter-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .search-input {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .filter-select {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+  }
+  
+  /* Colores para valoración */
+  .rating-high {
+    background-color: #40c057;
+  }
+  
+  .rating-medium {
+    background-color: #fd7e14;
+  }
+  
+  .rating-low {
+    background-color: #fa5252;
+  }
+  
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    animation: fadeIn 0.3s;
+  }
+  
+  .modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideDown 0.3s;
+  }
+  
+  .close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .close-modal:hover {
+    color: black;
+  }
+  
+  /* Detalles del restaurante */
+  .restaurant-detail {
+    padding: 1rem;
+  }
+  
+  .restaurant-detail h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+  }
+  
+  .detail-image-container {
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+  }
+  
+  .detail-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+  }
+  
+  .detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  
+  .detail-rating {
+    margin-left: auto;
+    font-size: 1.2rem;
+  }
+  
+  .detail-info {
+    margin-bottom: 1.5rem;
+  }
+  
+  .detail-info p {
+    margin-bottom: 0.5rem;
+  }
+  
+  .detail-features {
+    margin-bottom: 1.5rem;
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 0.8rem;
+  }
+  
+  .feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    background-color: #f8f9fa;
+    opacity: 0.6;
+  }
+  
+  .feature-item.active {
+    background-color: #e7f5ff;
+    opacity: 1;
+  }
+  
+  .feature-icon {
+    font-size: 1.5rem;
+  }
+  
+  .feature-name {
+    font-size: 0.9rem;
+  }
+  
+  .detail-comment {
+    margin-bottom: 1.5rem;
+  }
+  
+  .detail-comment h3 {
+    margin-bottom: 0.8rem;
+  }
+  
+  .detail-location h3 {
+    margin-bottom: 0.8rem;
+  }
+  
+  .detail-map {
+    height: 300px;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+  }
+  
+  .detail-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  /* Botones */
+  .primary-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  
+  .primary-button:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  .secondary-button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  
+  .secondary-button:hover {
+    background-color: #16464e;
+  }
+  
+  .ghost-button {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  
+  .ghost-button:hover {
+    background-color: #f1f3f5;
+  }
+  
+  .danger-button {
+    background-color: var(--error-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  
+  .danger-button:hover {
+    background-color: #d32f2f;
+  }
+  
+  .footer-button {
+    background-color: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    display: inline-block;
+  }
+  
+  .footer-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .footer-button.danger:hover {
+    background-color: var(--error-color);
+  }
+  
+  /* Notificaciones */
+  .notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: white;
+    z-index: 1000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+  
+  .notification.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .notification.success {
+    background-color: var(--success-color);
+  }
+  
+  .notification.error {
+    background-color: var(--error-color);
+  }
+  
+  .notification.info {
+    background-color: var(--info-color);
+  }
+  
+  .notification.warning {
+    background-color: var(--warning-color);
+  }
+  
+  .notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .notification-icon {
+    font-size: 1.2rem;
+  }
+  
+  /* Animaciones */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    nav {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .chart-section {
+      grid-template-columns: 1fr;
+    }
+    
+    .detail-actions {
+      flex-direction: column;
+    }
+    
+    .modal-content {
+      width: 95%;
+      margin: 10% auto;
+    }
+    
+    .filter-controls {
+      flex-direction: column;
+    }
+    
+    .search-input, .filter-select {
+      width: 100%;
+    }
+    
+    footer {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .data-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    main {
+      padding: 1rem;
+    }
+    
+    .nav-btn {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.9rem;
+    }
+    
+    .stat-card {
+      padding: 1rem;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+    }
+    
+    #map {
+      height: 400px;
+    }
+  }
+  
+  /* Ajustes para leaflet y los clusters */
+  .leaflet-popup-content {
+    margin: 10px;
+  }
+  
+  .marker-cluster {
+    background-color: rgba(var(--primary-color-rgb), 0.6);
+  }
+  
+  .marker-cluster div {
+    background-color: rgba(var(--primary-color-rgb), 0.8);
+    color: white;
+  }
