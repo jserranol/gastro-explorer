@@ -15,6 +15,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </head>
 <body>
   <div id="app">
@@ -33,6 +35,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -136,7 +140,7 @@
               <div class="image-upload-container">
                 <label for="image" class="upload-button">
                   <span>📷 Seleccionar Imagen</span>
-                  <input id="image" type="file" accept="image/*" class="hidden-file-input">
+                  <input id="image" type="file" accept="image/*" multiple class="hidden-file-input">
                 </label>
                 <div class="preview-container">
                   <img id="preview" class="image-preview" />
@@ -397,21 +401,26 @@
       });
     });
 
-    // Preview de imagen
+    
+    // Previsualizar múltiples imágenes
     document.getElementById('image').addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = e => {
-          preview.src = e.target.result;
-          preview.classList.add('has-image');
-        };
-        reader.readAsDataURL(file);
-      } else {
-        preview.src = '';
-        preview.classList.remove('has-image');
+      const files = e.target.files;
+      const previewContainer = document.querySelector('.preview-container');
+      previewContainer.innerHTML = '';
+      if (files.length > 0) {
+        Array.from(files).forEach(file => {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.classList.add('image-preview', 'has-image');
+            previewContainer.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
       }
     });
+    
 
     // Evento para encontrar coordenadas desde dirección
     document.getElementById('find-coords').addEventListener('click', async () => {
@@ -457,7 +466,11 @@
       const hasVeganOptions = document.getElementById('hasVeganOptions').checked;
       const acceptsReservations = document.getElementById('acceptsReservations').checked;
       
-      const image = preview.src || null;
+      
+    const previewContainer = document.querySelector('.preview-container');
+    const images = Array.from(previewContainer.querySelectorAll('img')).map(img => img.src);
+    const image = images.length > 0 ? images : null;
+    
       let lat = document.getElementById('latitude').value;
       let lng = document.getElementById('longitude').value;
 
@@ -498,8 +511,8 @@
       addMarkerToMap(restaurant);
       showNotification('¡Restaurante guardado con éxito!', 'success');
       form.reset();
-      preview.src = '';
-      preview.classList.remove('has-image');
+      document.querySelector('.preview-container').innerHTML = '';
+      
       activeRating = 0;
       document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
       
@@ -535,7 +548,7 @@
             ${restaurant.recommendedDish ? `<p><strong>Recomendado:</strong> ${restaurant.recommendedDish}</p>` : ''}
           </div>
           ${restaurant.comment ? `<p class="popup-comment">"${restaurant.comment}"</p>` : ''}
-          ${restaurant.image ? `<img src="${restaurant.image}" class="popup-image">` : ''}
+          ${restaurant.image ? (Array.isArray(restaurant.image) ? restaurant.image.map(img => `<img src="${img}" class="popup-image">`).join('') : `<img src="${restaurant.image}" class="popup-image">`) : ''}
           <button class="popup-button view-details" data-id="${restaurant.id}">Ver más detalles</button>
         </div>
       `;
@@ -621,7 +634,7 @@
         listaDiv.innerHTML = currentRestaurants.map(r => `
           <div class="restaurant-card" data-id="${r.id}">
             <div class="card-content">
-              ${r.image ? `<div class="card-img-container"><img src="${r.image}" alt="${r.name}" class="card-img"></div>` : ''}
+              ${r.image ? `<div class="card-img-container">${Array.isArray(r.image) ? r.image.map(img => `<img src="${img}" alt="${r.name}" class="card-img">`).join('') : `<img src="${r.image}" alt="${r.name}" class="card-img">`}</div>` : ''}
               <div class="card-details">
                 <div class="card-header">
                   <h3>${r.name}</h3>
@@ -646,6 +659,7 @@
             <div class="card-actions">
               <button class="card-btn view-on-map" data-lat="${r.lat}" data-lng="${r.lng}" data-id="${r.id}">Ver en Mapa</button>
               <button class="card-btn view-details" data-id="${r.id}">Detalles</button>
+              <button class="card-btn edit-restaurant" data-id="${r.id}">Editar</button>
               <button class="card-btn delete-restaurant" data-id="${r.id}">Eliminar</button>
             </div>
           </div>
@@ -706,11 +720,20 @@
         <div class="restaurant-detail">
           <h2>${restaurant.name}</h2>
           
-          ${restaurant.image ? `
-            <div class="detail-image-container">
-              <img src="${restaurant.image}" alt="${restaurant.name}" class="detail-image">
-            </div>
-          ` : ''}
+          ${restaurant.image ? (Array.isArray(restaurant.image) ? `
+        <div class="swiper-container detail-swiper">
+          <div class="swiper-wrapper">
+            ${restaurant.image.map(img => `<div class="swiper-slide"><img src="${img}" alt="${restaurant.name}" class="detail-image"></div>`).join('')}
+          </div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+      ` : `
+        <div class="detail-image-container">
+          <img src="${restaurant.image}" alt="${restaurant.name}" class="detail-image">
+        </div>
+      `) : ''}
           
           <div class="detail-content">
             <div class="detail-meta">
@@ -770,6 +793,21 @@
       `;
       
       modal.style.display = 'block';
+setTimeout(() => {
+  if (document.querySelector('.detail-swiper')) {
+    new Swiper('.detail-swiper', {
+      loop: true,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true
+      }
+    });
+  }
+}, 100);
       
       // Inicializar mapa en detalle
       setTimeout(() => {
@@ -1264,7 +1302,183 @@
     cargarDatosIniciales();
 
   </script>
-  </body>
+  
+<script>
+// Función para cargar un restaurante en el formulario
+function loadRestaurantForEdit(id) {
+  const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+  const restaurant = restaurants.find(r => r.id === id);
+  if (!restaurant) {
+    showNotification('No se encontró el restaurante', 'error');
+    return;
+  }
+  document.getElementById('toggle-form-btn').click();
+  document.querySelector('#form-section .section-heading h2').textContent = 'Editar Restaurante';
+  document.querySelector('#form-section .section-heading p').textContent = 'Modifica los datos del restaurante seleccionado.';
+  let hiddenIdInput = document.getElementById('edit-restaurant-id');
+  if (!hiddenIdInput) {
+    hiddenIdInput = document.createElement('input');
+    hiddenIdInput.type = 'hidden';
+    hiddenIdInput.id = 'edit-restaurant-id';
+    document.getElementById('restaurantForm').appendChild(hiddenIdInput);
+  }
+  hiddenIdInput.value = restaurant.id;
+  document.getElementById('name').value = restaurant.name;
+  document.getElementById('cuisine').value = restaurant.cuisine;
+  document.getElementById('address').value = restaurant.address;
+  document.getElementById('price').value = restaurant.price;
+  document.getElementById('dateVisited').value = restaurant.dateVisited;
+  activeRating = restaurant.rating;
+  document.getElementById('rating').value = restaurant.rating;
+  document.querySelectorAll('.star').forEach(s => {
+    s.classList.remove('active');
+    if (parseInt(s.dataset.value) <= restaurant.rating) {
+      s.classList.add('active');
+    }
+  });
+  document.getElementById('comment').value = restaurant.comment || '';
+  document.getElementById('recommended-dish').value = restaurant.recommendedDish || '';
+  document.getElementById('hasTerraza').checked = restaurant.hasTerraza || false;
+  document.getElementById('isAccessible').checked = restaurant.isAccessible || false;
+  document.getElementById('hasVeganOptions').checked = restaurant.hasVeganOptions || false;
+  document.getElementById('acceptsReservations').checked = restaurant.acceptsReservations || false;
+  document.getElementById('latitude').value = restaurant.lat;
+  document.getElementById('longitude').value = restaurant.lng;
+  if (restaurant.image) {
+    preview.src = restaurant.image;
+    preview.classList.add('has-image');
+  } else {
+    document.querySelector('.preview-container').innerHTML = '';
+    
+  }
+  const submitButton = document.querySelector('#restaurantForm [type="submit"]');
+  submitButton.textContent = 'Actualizar Restaurante';
+  let cancelButton = document.getElementById('cancel-edit');
+  if (!cancelButton) {
+    cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.id = 'cancel-edit';
+    cancelButton.className = 'ghost-button';
+    cancelButton.textContent = 'Cancelar Edición';
+    document.querySelector('.form-buttons').appendChild(cancelButton);
+    cancelButton.addEventListener('click', resetForm);
+  }
+  cancelButton.style.display = 'inline-block';
+}
+
+// Función para resetear el formulario
+function resetForm() {
+  document.querySelector('#form-section .section-heading h2').textContent = 'Añadir Nuevo Restaurante';
+  document.querySelector('#form-section .section-heading p').textContent = 'Registra tus experiencias gastronómicas para mantener un seguimiento de los lugares que visitas.';
+  document.getElementById('restaurantForm').reset();
+  if (document.getElementById('edit-restaurant-id')) {
+    document.getElementById('edit-restaurant-id').value = '';
+  }
+  activeRating = 0;
+  document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+  document.querySelector('.preview-container').innerHTML = '';
+  
+  const submitButton = document.querySelector('#restaurantForm [type="submit"]');
+  submitButton.textContent = 'Guardar Restaurante';
+  const cancelButton = document.getElementById('cancel-edit');
+  if (cancelButton) {
+    cancelButton.style.display = 'none';
+  }
+}
+
+// Modificar submit del formulario
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const cuisine = document.getElementById('cuisine').value;
+  const address = document.getElementById('address').value;
+  const price = document.getElementById('price').value;
+  const dateVisited = document.getElementById('dateVisited').value;
+  const rating = parseInt(document.getElementById('rating').value);
+  const comment = document.getElementById('comment').value;
+  const recommendedDish = document.getElementById('recommended-dish').value;
+  const hasTerraza = document.getElementById('hasTerraza').checked;
+  const isAccessible = document.getElementById('isAccessible').checked;
+  const hasVeganOptions = document.getElementById('hasVeganOptions').checked;
+  const acceptsReservations = document.getElementById('acceptsReservations').checked;
+  
+    const previewContainer = document.querySelector('.preview-container');
+    const images = Array.from(previewContainer.querySelectorAll('img')).map(img => img.src);
+    const image = images.length > 0 ? images : null;
+    
+  let lat = document.getElementById('latitude').value;
+  let lng = document.getElementById('longitude').value;
+  if (!lat || !lng) {
+    showNotification('Debes proporcionar coordenadas para guardar el restaurante', 'error');
+    return;
+  }
+  if (!rating) {
+    showNotification('Por favor, añade una valoración', 'error');
+    return;
+  }
+  const editId = document.getElementById('edit-restaurant-id')?.value;
+  const isEditing = editId !== '';
+  const restaurant = {
+    id: isEditing ? editId : Date.now().toString(),
+    name,
+    cuisine,
+    address,
+    price,
+    dateVisited: dateVisited || new Date().toLocaleDateString('es-ES'),
+    rating,
+    comment,
+    image,
+    recommendedDish,
+    hasTerraza,
+    isAccessible,
+    hasVeganOptions,
+    acceptsReservations,
+    lat,
+    lng,
+    dateAdded: isEditing ? JSON.parse(localStorage.getItem('restaurants') || '[]').find(r => r.id === editId)?.dateAdded : new Date().toISOString()
+  };
+  const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+  if (isEditing) {
+    const index = restaurants.findIndex(r => r.id === editId);
+    if (index !== -1) {
+      restaurants[index] = restaurant;
+      showNotification('¡Restaurante actualizado con éxito!', 'success');
+    } else {
+      showNotification('Error al actualizar: restaurante no encontrado', 'error');
+      return;
+    }
+  } else {
+    restaurants.push(restaurant);
+    showNotification('¡Restaurante guardado con éxito!', 'success');
+  }
+  localStorage.setItem('restaurants', JSON.stringify(restaurants));
+  refreshMap();
+  resetForm();
+  renderRestaurantsList();
+  updateStats();
+});
+
+// Agregar listeners de edición en tarjetas
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.edit-restaurant').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = e.target.getAttribute('data-id');
+      loadRestaurantForEdit(id);
+    });
+  });
+});
+
+// Agregar listener de edición en detalles
+document.addEventListener('click', function(event) {
+  if (event.target.matches('.edit-restaurant-detail')) {
+    const id = event.target.getAttribute('data-id');
+    modal.style.display = 'none';
+    loadRestaurantForEdit(id);
+  }
+});
+</script>
+
+</body>
 </html>
   </div>
 
@@ -1275,5 +1489,181 @@
         .catch(error => console.log('Error al registrar Service Worker:', error));
     }
   </script>
+
+<script>
+// Función para cargar un restaurante en el formulario
+function loadRestaurantForEdit(id) {
+  const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+  const restaurant = restaurants.find(r => r.id === id);
+  if (!restaurant) {
+    showNotification('No se encontró el restaurante', 'error');
+    return;
+  }
+  document.getElementById('toggle-form-btn').click();
+  document.querySelector('#form-section .section-heading h2').textContent = 'Editar Restaurante';
+  document.querySelector('#form-section .section-heading p').textContent = 'Modifica los datos del restaurante seleccionado.';
+  let hiddenIdInput = document.getElementById('edit-restaurant-id');
+  if (!hiddenIdInput) {
+    hiddenIdInput = document.createElement('input');
+    hiddenIdInput.type = 'hidden';
+    hiddenIdInput.id = 'edit-restaurant-id';
+    document.getElementById('restaurantForm').appendChild(hiddenIdInput);
+  }
+  hiddenIdInput.value = restaurant.id;
+  document.getElementById('name').value = restaurant.name;
+  document.getElementById('cuisine').value = restaurant.cuisine;
+  document.getElementById('address').value = restaurant.address;
+  document.getElementById('price').value = restaurant.price;
+  document.getElementById('dateVisited').value = restaurant.dateVisited;
+  activeRating = restaurant.rating;
+  document.getElementById('rating').value = restaurant.rating;
+  document.querySelectorAll('.star').forEach(s => {
+    s.classList.remove('active');
+    if (parseInt(s.dataset.value) <= restaurant.rating) {
+      s.classList.add('active');
+    }
+  });
+  document.getElementById('comment').value = restaurant.comment || '';
+  document.getElementById('recommended-dish').value = restaurant.recommendedDish || '';
+  document.getElementById('hasTerraza').checked = restaurant.hasTerraza || false;
+  document.getElementById('isAccessible').checked = restaurant.isAccessible || false;
+  document.getElementById('hasVeganOptions').checked = restaurant.hasVeganOptions || false;
+  document.getElementById('acceptsReservations').checked = restaurant.acceptsReservations || false;
+  document.getElementById('latitude').value = restaurant.lat;
+  document.getElementById('longitude').value = restaurant.lng;
+  if (restaurant.image) {
+    preview.src = restaurant.image;
+    preview.classList.add('has-image');
+  } else {
+    document.querySelector('.preview-container').innerHTML = '';
+    
+  }
+  const submitButton = document.querySelector('#restaurantForm [type="submit"]');
+  submitButton.textContent = 'Actualizar Restaurante';
+  let cancelButton = document.getElementById('cancel-edit');
+  if (!cancelButton) {
+    cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.id = 'cancel-edit';
+    cancelButton.className = 'ghost-button';
+    cancelButton.textContent = 'Cancelar Edición';
+    document.querySelector('.form-buttons').appendChild(cancelButton);
+    cancelButton.addEventListener('click', resetForm);
+  }
+  cancelButton.style.display = 'inline-block';
+}
+
+// Función para resetear el formulario
+function resetForm() {
+  document.querySelector('#form-section .section-heading h2').textContent = 'Añadir Nuevo Restaurante';
+  document.querySelector('#form-section .section-heading p').textContent = 'Registra tus experiencias gastronómicas para mantener un seguimiento de los lugares que visitas.';
+  document.getElementById('restaurantForm').reset();
+  if (document.getElementById('edit-restaurant-id')) {
+    document.getElementById('edit-restaurant-id').value = '';
+  }
+  activeRating = 0;
+  document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+  document.querySelector('.preview-container').innerHTML = '';
+  
+  const submitButton = document.querySelector('#restaurantForm [type="submit"]');
+  submitButton.textContent = 'Guardar Restaurante';
+  const cancelButton = document.getElementById('cancel-edit');
+  if (cancelButton) {
+    cancelButton.style.display = 'none';
+  }
+}
+
+// Modificar submit del formulario
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const cuisine = document.getElementById('cuisine').value;
+  const address = document.getElementById('address').value;
+  const price = document.getElementById('price').value;
+  const dateVisited = document.getElementById('dateVisited').value;
+  const rating = parseInt(document.getElementById('rating').value);
+  const comment = document.getElementById('comment').value;
+  const recommendedDish = document.getElementById('recommended-dish').value;
+  const hasTerraza = document.getElementById('hasTerraza').checked;
+  const isAccessible = document.getElementById('isAccessible').checked;
+  const hasVeganOptions = document.getElementById('hasVeganOptions').checked;
+  const acceptsReservations = document.getElementById('acceptsReservations').checked;
+  
+    const previewContainer = document.querySelector('.preview-container');
+    const images = Array.from(previewContainer.querySelectorAll('img')).map(img => img.src);
+    const image = images.length > 0 ? images : null;
+    
+  let lat = document.getElementById('latitude').value;
+  let lng = document.getElementById('longitude').value;
+  if (!lat || !lng) {
+    showNotification('Debes proporcionar coordenadas para guardar el restaurante', 'error');
+    return;
+  }
+  if (!rating) {
+    showNotification('Por favor, añade una valoración', 'error');
+    return;
+  }
+  const editId = document.getElementById('edit-restaurant-id')?.value;
+  const isEditing = editId !== '';
+  const restaurant = {
+    id: isEditing ? editId : Date.now().toString(),
+    name,
+    cuisine,
+    address,
+    price,
+    dateVisited: dateVisited || new Date().toLocaleDateString('es-ES'),
+    rating,
+    comment,
+    image,
+    recommendedDish,
+    hasTerraza,
+    isAccessible,
+    hasVeganOptions,
+    acceptsReservations,
+    lat,
+    lng,
+    dateAdded: isEditing ? JSON.parse(localStorage.getItem('restaurants') || '[]').find(r => r.id === editId)?.dateAdded : new Date().toISOString()
+  };
+  const restaurants = JSON.parse(localStorage.getItem('restaurants') || '[]');
+  if (isEditing) {
+    const index = restaurants.findIndex(r => r.id === editId);
+    if (index !== -1) {
+      restaurants[index] = restaurant;
+      showNotification('¡Restaurante actualizado con éxito!', 'success');
+    } else {
+      showNotification('Error al actualizar: restaurante no encontrado', 'error');
+      return;
+    }
+  } else {
+    restaurants.push(restaurant);
+    showNotification('¡Restaurante guardado con éxito!', 'success');
+  }
+  localStorage.setItem('restaurants', JSON.stringify(restaurants));
+  refreshMap();
+  resetForm();
+  renderRestaurantsList();
+  updateStats();
+});
+
+// Agregar listeners de edición en tarjetas
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.edit-restaurant').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = e.target.getAttribute('data-id');
+      loadRestaurantForEdit(id);
+    });
+  });
+});
+
+// Agregar listener de edición en detalles
+document.addEventListener('click', function(event) {
+  if (event.target.matches('.edit-restaurant-detail')) {
+    const id = event.target.getAttribute('data-id');
+    modal.style.display = 'none';
+    loadRestaurantForEdit(id);
+  }
+});
+</script>
+
 </body>
 </html>

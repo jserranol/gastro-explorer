@@ -16,5 +16,8 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "description": "Registra y explora tus experiencias gastronómicas favoritas.",
+  "orientation": "portrait-primary",
+  "scope": "./"
 }
